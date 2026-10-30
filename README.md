@@ -5,7 +5,7 @@ A lightweight TCP honeypot written in Python for learning network security, conn
 
 ## Features
 
-- [ ] TCP server
+- [X] TCP server (single-client echo server)
 - [ ] Connection monitoring
 - [ ] Event logging
 - [ ] Connection analysis
