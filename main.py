@@ -13,7 +13,9 @@ def start_server():
         server.listen()
         client_socket, client_address = server.accept()
         with client_socket:
-            print(f"Connected by {client_address}")
+            print("connection established:")
+            print(f"ip: {client_address[0]}")
+            print(f"port: {client_address[1]}")
             while True:
                 data = client_socket.recv(1024)
                 if not data:
