@@ -1,4 +1,5 @@
 import socket
+import datetime
 
 HOST = "127.0.0.1"
 PORT = 8081
@@ -16,6 +17,9 @@ def start_server():
             print("connection established:")
             print(f"ip: {client_address[0]}")
             print(f"port: {client_address[1]}")
+            utc_dt = datetime.datetime.now(datetime.timezone.utc)
+            log_dt = utc_dt.strftime("%d-%m-%Y %H:%M:%S UTC+0")
+            print("timestamp:", log_dt)
             while True:
                 data = client_socket.recv(1024)
                 if not data:
