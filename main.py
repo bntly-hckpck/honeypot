@@ -17,12 +17,12 @@ def start_server():
             print("connection established:")
             print(f"ip: {client_address[0]}")
             print(f"port: {client_address[1]}")
-            utc_dt = datetime.datetime.now(datetime.timezone.utc)
-            log_dt = utc_dt.strftime("%d-%m-%Y %H:%M:%S UTC+0")
-            print("timestamp:", log_dt)
+            print("timestamp:", timestamp())
             while True:
                 data = client_socket.recv(1024)
                 if not data:
+                    print("client disconnected:")
+                    print("timestamp:", timestamp())
                     break
                 client_socket.sendall(data)
     except socket.error as error:
@@ -30,6 +30,12 @@ def start_server():
         return
     finally:
         server.close()
+
+
+def timestamp():
+    utc_dt = datetime.datetime.now(datetime.timezone.utc)
+    log_dt = utc_dt.strftime("%d-%m-%Y %H:%M:%S UTC+0")
+    return log_dt
 
 
 if __name__ == "__main__":
