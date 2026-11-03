@@ -18,11 +18,15 @@ def start_server():
             print(f"ip: {client_address[0]}")
             print(f"port: {client_address[1]}")
             print("timestamp:", timestamp())
+            start_time = datetime.datetime.now(datetime.timezone.utc)
             while True:
                 data = client_socket.recv(1024)
                 if not data:
                     print("client disconnected:")
                     print("timestamp:", timestamp())
+                    end_time = datetime.datetime.now(datetime.timezone.utc)
+                    conn_duration = (end_time - start_time)
+                    print("connection duration (seconds):", conn_duration.total_seconds())
                     break
                 client_socket.sendall(data)
     except socket.error as error:
