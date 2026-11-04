@@ -26,8 +26,9 @@ def start_server():
                     print("timestamp:", timestamp())
                     end_time = datetime.datetime.now(datetime.timezone.utc)
                     conn_duration = (end_time - start_time)
-                    print("connection duration (seconds):", conn_duration.total_seconds())
+                    print("connection duration:", str(conn_duration).split(".")[0])
                     break
+                print(str(len(data)) + " bytes received")
                 client_socket.sendall(data)
     except socket.error as error:
         print(f"error:\n{error}")
