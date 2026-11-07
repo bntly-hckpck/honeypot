@@ -15,6 +15,8 @@ def start_server():
         client_socket, client_address = server.accept()
         with client_socket:
             print("[INFO] connection established")
+            with open("connections.log", "a", encoding="utf-8") as log:
+                log.write("[INFO] connection established\n")
             print("ip: " + client_address[0])
             print("port: " + str(client_address[1]))
             print("timestamp: " + timestamp())
