@@ -16,7 +16,12 @@ def start_server():
         with client_socket:
             print("[INFO] connection established")
             with open("connections.log", "a", encoding="utf-8") as log:
-                log.write("[INFO] " + timestamp() + " connection established\n")
+                log.write(
+                    "[INFO] " + timestamp() 
+                    + " connection established | ip: " + client_address[0] 
+                    + " | port: " + str(client_address[1]) 
+                    + "\n"
+                )   
             print("ip: " + client_address[0])
             print("port: " + str(client_address[1]))
             print("timestamp: " + timestamp())
@@ -26,10 +31,19 @@ def start_server():
                 data = client_socket.recv(1024)
                 total_bytes += len(data)
                 if not data:
-                    print("[INFO] client disconnected")
-                    print("timestamp: " + timestamp())
                     end_time = datetime.datetime.now(datetime.timezone.utc)
                     conn_duration = (end_time - start_time)
+                    print("[INFO] client disconnected")
+                    with open("connections.log", "a", encoding="utf-8") as log:
+                        log.write(
+                            "[INFO] " + timestamp()
+                            + " client disconnected | ip: " + client_address[0]
+                            + " | port: " + str(client_address[1])
+                            + " | connection duration: " + str(conn_duration).split(".")[0] 
+                            + " | total bytes received: " + str(total_bytes)
+                            + "\n"
+                        )
+                    print("timestamp: " + timestamp())
                     print("connection duration: " + str(conn_duration).split(".")[0])
                     print("total bytes received: " + str(total_bytes))
                     break
