@@ -15,35 +15,37 @@ def start_server():
         client_socket, client_address = server.accept()
         with client_socket:
             print("[INFO] connection established")
+            conn_start_ts = timestamp()
+            start_time = datetime.datetime.now(datetime.timezone.utc)
             with open("connections.log", "a", encoding="utf-8") as log:
                 log.write(
-                    "[INFO] " + timestamp() 
-                    + " connection established | ip: " + client_address[0] 
-                    + " | port: " + str(client_address[1]) 
+                    "[INFO] " + conn_start_ts
+                    + " connection established | ip: " + client_address[0]
+                    + " | port: " + str(client_address[1])
                     + "\n"
-                )   
+                )
             print("ip: " + client_address[0])
             print("port: " + str(client_address[1]))
-            print("timestamp: " + timestamp())
-            start_time = datetime.datetime.now(datetime.timezone.utc)
+            print("timestamp: " + conn_start_ts)
             total_bytes = 0
             while True:
                 data = client_socket.recv(1024)
                 total_bytes += len(data)
                 if not data:
+                    conn_end_ts = timestamp()
                     end_time = datetime.datetime.now(datetime.timezone.utc)
                     conn_duration = (end_time - start_time)
                     print("[INFO] client disconnected")
                     with open("connections.log", "a", encoding="utf-8") as log:
                         log.write(
-                            "[INFO] " + timestamp()
+                            "[INFO] " + conn_end_ts
                             + " client disconnected | ip: " + client_address[0]
                             + " | port: " + str(client_address[1])
-                            + " | connection duration: " + str(conn_duration).split(".")[0] 
+                            + " | connection duration: " + str(conn_duration).split(".")[0]
                             + " | total bytes received: " + str(total_bytes)
                             + "\n"
                         )
-                    print("timestamp: " + timestamp())
+                    print("timestamp: " + conn_end_ts)
                     print("connection duration: " + str(conn_duration).split(".")[0])
                     print("total bytes received: " + str(total_bytes))
                     break
