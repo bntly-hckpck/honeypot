@@ -59,9 +59,9 @@ def start_server():
                             )
 
                         print("timestamp: " + conn_end_ts
-                        + "\nconnection duration: " + str(conn_duration).split(".")[0]
-                        + "\ntotal bytes received: " + str(total_bytes)
-                        + "\nreceive operations: " + str(operations))
+                            + "\nconnection duration: " + str(conn_duration).split(".")[0]
+                            + "\ntotal bytes received: " + str(total_bytes)
+                            + "\nreceive operations: " + str(operations))
                         break
 
                     operations += 1
@@ -71,7 +71,10 @@ def start_server():
     except socket.error as error:
         print("[ERROR] " + str(error))
         return
-        
+
+    except KeyboardInterrupt:
+        print("\n[INFO] server stopped")
+
     finally:
         server.close()
 
