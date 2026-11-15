@@ -12,19 +12,24 @@ def start_server():
         server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server.bind((HOST, PORT))
         server.listen()
-        print("[INFO] listening on " + HOST + ":" + str(PORT))
+        print("[INFO] [SERVER] listening on " + HOST + ":" + str(PORT))
+        connection_number = 1
 
         while True:
             client_socket, client_address = server.accept()
 
             with client_socket:
-                print("[INFO] [CONN] connection established")
+                print(
+                    "[INFO] [CONN] connection established"
+                    + " | connection number: " + str(connection_number)
+                    )
                 conn_start_ts = timestamp()
                 start_time = datetime.datetime.now(datetime.timezone.utc)
 
                 with open("connections.log", "a", encoding="utf-8") as log:
                     log.write(
                         "[INFO] [CONN] connection established"
+                        + " | connection number: " + str(connection_number)
                         + " | timestamp: " + conn_start_ts
                         + " | ip: " + client_address[0]
                         + " | port: " + str(client_address[1])
@@ -36,7 +41,7 @@ def start_server():
                     + "\nport: " + str(client_address[1])
                     + "\ntimestamp: " + conn_start_ts
                     )
-
+                
                 total_bytes = 0
                 operations = 0
 
@@ -57,6 +62,7 @@ def start_server():
                         with open("connections.log", "a", encoding="utf-8") as log:
                             log.write(
                                 data_info
+                                + " | connection number: " + str(connection_number) 
                                 + " | timestamp: " + conn_end_ts
                                 + " | ip: " + client_address[0]
                                 + " | port: " + str(client_address[1])
@@ -69,25 +75,27 @@ def start_server():
 
                         print(
                             data_info
+                            + "\nconnection number: " + str(connection_number)
                             + "\ntimestamp: " + conn_end_ts
                             + "\nconnection duration: " + str(conn_duration).split(".")[0]
                             + "\ntotal bytes received: " + str(total_bytes)
                             + "\nreceive operations: " + str(operations)
                             + "\n"
                             )
-
                         break
 
                     operations += 1
                     print("[INFO] [RECV] " + str(len(data)) + " bytes received")
                     client_socket.sendall(data)
 
+                connection_number += 1
+
     except socket.error as error:
         print("[ERROR] [SOCKET] " + str(error))
         return
 
     except KeyboardInterrupt:
-        print("\n[INFO] server stopped")
+        print("\n[INFO] [SERVER] server stopped")
 
     finally:
         server.close()
