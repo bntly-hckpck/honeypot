@@ -19,12 +19,18 @@ def start_server():
             client_socket, client_address = server.accept()
 
             with client_socket:
-                print(
-                    "[INFO] [CONN] connection established"
-                    + " | connection number: " + str(connection_number)
-                    )
+
+                client_socket.settimeout(30)
                 conn_start_ts = timestamp()
                 start_time = datetime.datetime.now(datetime.timezone.utc)
+
+                print(
+                    "[INFO] [CONN] connection established"
+                    + "\nconnection number: " + str(connection_number)
+                    + "\ntimestamp: " + conn_start_ts
+                    + "\nip: " + client_address[0]
+                    + "\nport: " + str(client_address[1])
+                    )
 
                 with open("connections.log", "a", encoding="utf-8") as log:
                     log.write(
@@ -35,18 +41,50 @@ def start_server():
                         + " | port: " + str(client_address[1])
                         + "\n"
                     )
-
-                print(
-                    "ip: " + client_address[0]
-                    + "\nport: " + str(client_address[1])
-                    + "\ntimestamp: " + conn_start_ts
-                    )
                 
                 total_bytes = 0
                 operations = 0
 
                 while True:
-                    data = client_socket.recv(1024)
+
+                    try:
+
+                        data = client_socket.recv(1024)
+
+                    except socket.timeout:     
+
+                        conn_end_ts = timestamp()
+                        end_time = datetime.datetime.now(datetime.timezone.utc)
+                        conn_duration = (end_time - start_time)
+
+                        print(
+                            "[WARNING] [TIMEOUT] client inactive"
+                            + "\nconnection number: " + str(connection_number)
+                            + "\ntimestamp: " + conn_end_ts
+                            + "\nip: " + client_address[0]
+                            + "\nport: " + str(client_address[1])
+                            + "\nconnection duration: " + str(conn_duration).split(".")[0]
+                            + "\ntotal bytes received: " + str(total_bytes)
+                            + "\nreceive operations: " + str(operations)
+                            + "\n"
+                        )
+
+                        with open("connections.log", "a", encoding="utf-8") as log:
+                            log.write(
+                                "[WARNING] [TIMEOUT] client inactive"
+                                + " | connection number: " + str(connection_number)
+                                + " | timestamp: " + conn_end_ts
+                                + " | ip: " + client_address[0]
+                                + " | port: " + str(client_address[1])
+                                + " | connection duration: " + str(conn_duration).split(".")[0]
+                                + " | total bytes received: " + str(total_bytes)
+                                + " | receive operations: " + str(operations)
+                                + "\n"
+                                + "\n"
+                            )
+
+                        break
+
                     total_bytes += len(data)
 
                     if not data:
@@ -77,6 +115,8 @@ def start_server():
                             data_info
                             + "\nconnection number: " + str(connection_number)
                             + "\ntimestamp: " + conn_end_ts
+                            + "\nip: " + client_address[0]
+                            + "\nport: " + str(client_address[1])
                             + "\nconnection duration: " + str(conn_duration).split(".")[0]
                             + "\ntotal bytes received: " + str(total_bytes)
                             + "\nreceive operations: " + str(operations)
