@@ -12,7 +12,9 @@ def start_server():
         server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server.bind((HOST, PORT))
         server.listen()
+        client_timeout = 30
         print("[INFO] [SERVER] listening on " + HOST + ":" + str(PORT))
+        print("[INFO] [SERVER] client inactivity timeout: " + str(client_timeout) + "s")
         connection_number = 1
 
         while True:
@@ -20,7 +22,7 @@ def start_server():
 
             with client_socket:
 
-                client_socket.settimeout(30)
+                client_socket.settimeout(client_timeout)
                 conn_start_ts = timestamp()
                 start_time = datetime.datetime.now(datetime.timezone.utc)
 
