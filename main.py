@@ -50,11 +50,16 @@ def start_server():
                 while True:
                     try:
                         data = client_socket.recv(1024)
+                        total_bytes += len(data)
+                        if data:
+                            operations += 1
+                            client_socket.sendall(data)
                     except socket.timeout:     
                         data_info = "[WARNING] [TIMEOUT] client inactive"
                         break
-
-                    total_bytes += len(data)
+                    except socket.error as error:
+                        data_info = "[ERROR] [SOCKET] " + str(error)
+                        break
 
                     if not data:
                         if operations == 0:
@@ -63,9 +68,7 @@ def start_server():
                             data_info = "[INFO] [DISC] client disconnected"
                         break
 
-                    operations += 1
                     print("[INFO] [RECV] " + str(len(data)) + " bytes received")
-                    client_socket.sendall(data)
 
                 conn_end_ts = timestamp()
                 end_time = datetime.datetime.now(datetime.timezone.utc)
