@@ -8,7 +8,12 @@ def start_client():
     
     try:
         client.connect((HOST, PORT))
-
+        print("[INFO] [CLIENT] connected to " + HOST + ":" + str(PORT))
+    except ConnectionRefusedError as error:
+        print("[ERROR] [CLIENT] " + str(error))
+    except ConnectionError as error:
+        print("[ERROR] [CLIENT] " + str(error))
+            
     finally:
         client.close()
 
