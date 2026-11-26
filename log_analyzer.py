@@ -3,7 +3,8 @@ def log_analyzer():
     try:
         with open('connections.log') as connections_log:
             read_data = connections_log.read()
-            print(read_data)
+            total_connections = read_data.count("connection established")
+            print("[INFO] [ANALYZER] total connections: " + str(total_connections))
     except FileNotFoundError:
         print('[ERROR] [ANALYZER] "connections.log" not found')
 
